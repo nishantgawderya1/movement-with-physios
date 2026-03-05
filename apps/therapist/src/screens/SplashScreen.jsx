@@ -1,9 +1,19 @@
+import { useEffect } from "react";
 import { View, Text, StyleSheet, StatusBar } from "react-native";
 import { SafeAreaView }
   from "react-native-safe-area-context";
 import { COLORS } from "../constants/colors";
+import { ROUTES } from "../constants/routes";
  
-export default function SplashScreen() {
+export default function SplashScreen({ navigation }) {
+  // Auto-navigate to Login after 2 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigation.replace(ROUTES.LOGIN);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [navigation]);
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar
