@@ -4,6 +4,7 @@ import SplashScreen from '../screens/splash/SplashScreen';
 import LoginScreen from '../screens/auth/LoginScreen';
 import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
 import RegisterScreen from '../screens/auth/RegisterScreen';
+import TherapistPortalScreen from '../screens/auth/TherapistPortalScreen';
 
 // Auth flow navigator — handles Login, ForgotPassword, Register screens
 const Stack = createStackNavigator();
@@ -14,6 +15,7 @@ const AuthNavigator = () => (
     <Stack.Screen name="Login" component={LoginScreen} />
     <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
     <Stack.Screen name="Register" component={RegisterScreen} />
+    <Stack.Screen name="TherapistPortal" component={TherapistPortalScreen} />
   </Stack.Navigator>
 );
 

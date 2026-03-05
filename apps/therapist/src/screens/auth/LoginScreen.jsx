@@ -1,141 +1,223 @@
+// src/screens/auth/LoginScreen.jsx
+// ─────────────────────────────────────────────────────────────────────────────
+// FIGMA REFERENCE: Screen 2 — Login/Signup Screen
+// Design: Welcome screen with feature highlights + two CTA buttons
+// "Start My Recovery" navigates to Register (placeholder)
+// "Login" navigates to the actual login form (placeholder — backend connects here)
+// DO NOT modify navigation targets — backend developer will wire these up
+// ─────────────────────────────────────────────────────────────────────────────
+
 import React from 'react';
 import {
-  View, Text, ScrollView, TouchableOpacity,
-  StyleSheet, KeyboardAvoidingView, Platform, SafeAreaView,
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  Dimensions,
 } from 'react-native';
-import { Feather } from '@expo/vector-icons';
-
-import InputField from '../../components/InputField';
-import AppButton from '../../components/AppButton';
-import useLoginForm from '../../hooks/useLoginForm';
 import { colors } from '../../constants/colors';
 import { fonts } from '../../constants/fonts';
-import { strings } from '../../constants/strings';
 
-// Main login screen — composes all components together
+const { width } = Dimensions.get('window');
+
+// ── Feature card data ────────────────────────────────────────────────────────
+// Matches the 3 rows shown in Figma exactly
+const FEATURES = [
+  {
+    id: '1',
+    icon: '📍',
+    title: 'Made for India',
+    description: 'Your Digital Physiotherapy Assistant.',
+  },
+  {
+    id: '2',
+    icon: '🧑‍⚕️',
+    title: 'Scale Fast beyond your Clinic',
+    description: 'Monitor More Patients. Maintain Clinical Control.',
+  },
+  {
+    id: '3',
+    icon: '🛡️',
+    title: 'Secure & Encrypted',
+    description: "Only you can access patient's medical information",
+  },
+];
+
+// ── Feature Card Component ───────────────────────────────────────────────────
+const FeatureCard = ({ icon, title, description }) => (
+  <View style={styles.featureCard}>
+    <Text style={styles.featureIcon}>{icon}</Text>
+    <View style={styles.featureText}>
+      <Text style={styles.featureTitle}>{title}</Text>
+      <Text style={styles.featureDesc}>{description}</Text>
+    </View>
+  </View>
+);
+
+// ── Main Screen ──────────────────────────────────────────────────────────────
 const LoginScreen = ({ navigation }) => {
-  const {
-    email, setEmail,
-    password, setPassword,
-    errors,
-    showPassword, toggleShowPassword,
-    loading,
-    handleLogin,
-  } = useLoginForm(navigation);
-
   return (
     <SafeAreaView style={styles.safe}>
-      <KeyboardAvoidingView
-        style={styles.flex}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        showsVerticalScrollIndicator={false}
       >
-        <ScrollView
-          contentContainerStyle={styles.scroll}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
-          {/* ── Logo & Header ── */}
-          <View style={styles.header}>
-            <View style={styles.logo}>
-              <Text style={styles.logoText}>{strings.login.logoInitials}</Text>
-            </View>
-            <Text style={styles.title}>{strings.login.title}</Text>
-            <Text style={styles.subtitle}>{strings.login.subtitle}</Text>
-          </View>
 
-          {/* ── Form Card ── */}
-          <View style={styles.card}>
-            <InputField
-              label={strings.login.emailLabel}
-              value={email}
-              onChangeText={setEmail}
-              placeholder={strings.login.emailPlaceholder}
-              keyboardType="email-address"
-              errorMessage={errors.email}
+        {/* ── Heading ──────────────────────────────────────────────── */}
+        <Text style={styles.heading}>Welcome !!</Text>
+
+        {/* ── Subtitle ─────────────────────────────────────────────── */}
+        <Text style={styles.subtitle}>
+          {"Scale Your Practice Without Compromising\nCare. Extend Your Clinic Beyond Walls"}
+        </Text>
+
+        {/* ── Feature Cards ────────────────────────────────────────── */}
+        <View style={styles.featuresWrapper}>
+          {FEATURES.map((f) => (
+            <FeatureCard
+              key={f.id}
+              icon={f.icon}
+              title={f.title}
+              description={f.description}
             />
+          ))}
+        </View>
 
-            <InputField
-              label={strings.login.passwordLabel}
-              value={password}
-              onChangeText={setPassword}
-              placeholder={strings.login.passwordPlaceholder}
-              secureTextEntry={!showPassword}
-              errorMessage={errors.password}
-              rightIcon={
-                <Feather
-                  name={showPassword ? 'eye-off' : 'eye'}
-                  size={20}
-                  color={colors.subtext}
-                />
-              }
-              onRightIconPress={toggleShowPassword}
-            />
+        {/* ── CTA Buttons ──────────────────────────────────────────── */}
+        <View style={styles.buttonsWrapper}>
 
-            {/* Forgot Password */}
-            <TouchableOpacity
-              style={styles.forgotRow}
-              onPress={() => navigation.navigate('ForgotPassword')}
-            >
-              <Text style={styles.forgotText}>{strings.login.forgotPassword}</Text>
-            </TouchableOpacity>
+          {/* Primary: Start My Recovery */}
+          <TouchableOpacity
+            style={styles.buttonPrimary}
+            activeOpacity={0.85}
+            onPress={() => navigation.navigate('Register')}
+          >
+            <Text style={styles.buttonPrimaryText}>Activate My Clinic</Text>
+          </TouchableOpacity>
 
-            {/* Login Button */}
-            <AppButton
-              title={strings.login.loginButton}
-              onPress={handleLogin}
-              loading={loading}
-            />
-          </View>
+          {/* Outline: Login */}
+          <TouchableOpacity
+            style={styles.buttonOutline}
+            activeOpacity={0.85}
+            onPress={() => navigation.navigate('TherapistPortal')}
+          >
+            <Text style={styles.buttonOutlineText}>Login</Text>
+          </TouchableOpacity>
 
-          {/* ── Register Link ── */}
-          <View style={styles.registerRow}>
-            <Text style={styles.registerPrompt}>{strings.login.noAccount} </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-              <Text style={styles.registerLink}>{strings.login.register}</Text>
-            </TouchableOpacity>
-          </View>
+        </View>
 
-        </ScrollView>
-      </KeyboardAvoidingView>
+      </ScrollView>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.background },
-  flex: { flex: 1 },
-  scroll: { flexGrow: 1, padding: 24, justifyContent: 'center' },
-  header: { alignItems: 'center', marginBottom: 32 },
-  logo: {
-    width: 84, height: 84, borderRadius: 22,
-    backgroundColor: colors.primary,
-    justifyContent: 'center', alignItems: 'center',
-    marginBottom: 18,
-    shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 8,
+  safe: {
+    flex: 1,
+    backgroundColor: colors.background,   // Figma: #F7FAFC
   },
-  logoText: { color: colors.white, fontSize: fonts.xl, fontWeight: fonts.bold },
-  title: { fontSize: fonts.xxl, fontWeight: fonts.bold, color: colors.text, marginBottom: 6 },
-  subtitle: { fontSize: fonts.sm, color: colors.subtext, textAlign: 'center' },
-  card: {
+  scroll: {
+    flexGrow: 1,
+    paddingHorizontal: 24,                 // Figma: 24px horizontal padding
+    paddingTop: 48,
+    paddingBottom: 40,
+    alignItems: 'center',
+  },
+
+  // ── Heading ─────────────────────────────────────────────────────────────
+  heading: {
+    fontSize: fonts.xxxl,                  // Figma: large bold heading
+    fontWeight: fonts.extrabold,
+    color: colors.textDark,
+    textAlign: 'center',
+    marginBottom: 14,
+  },
+
+  // ── Subtitle ────────────────────────────────────────────────────────────
+  subtitle: {
+    fontSize: fonts.sm,
+    fontWeight: fonts.regular,
+    color: colors.textLight,              // Figma: gray subtitle
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 32,
+  },
+
+  // ── Feature Cards ───────────────────────────────────────────────────────
+  featuresWrapper: {
+    width: '100%',
+    gap: 12,                              // Figma: ~12px gap between cards
+    marginBottom: 36,
+  },
+  featureCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: colors.white,
-    borderRadius: 20,
-    padding: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.07,
-    shadowRadius: 12,
-    elevation: 4,
-    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: colors.cardBorder,       // Figma: light gray border on cards
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    gap: 14,
   },
-  forgotRow: { alignSelf: 'flex-end', marginBottom: 12, marginTop: -6 },
-  forgotText: { color: colors.primary, fontSize: fonts.sm, fontWeight: fonts.semibold },
-  registerRow: { flexDirection: 'row', justifyContent: 'center', paddingBottom: 16 },
-  registerPrompt: { color: colors.subtext, fontSize: fonts.sm },
-  registerLink: { color: colors.primary, fontSize: fonts.sm, fontWeight: fonts.bold },
+  featureIcon: {
+    fontSize: 22,
+    width: 32,
+    textAlign: 'center',
+  },
+  featureText: {
+    flex: 1,
+  },
+  featureTitle: {
+    fontSize: fonts.md,
+    fontWeight: fonts.semibold,
+    color: colors.textDark,              // Figma: dark title in each card
+    marginBottom: 2,
+  },
+  featureDesc: {
+    fontSize: fonts.sm,
+    fontWeight: fonts.regular,
+    color: colors.textLight,             // Figma: gray description
+    lineHeight: 18,
+  },
+
+  // ── Buttons ─────────────────────────────────────────────────────────────
+  buttonsWrapper: {
+    width: '100%',
+    gap: 12,
+  },
+  buttonPrimary: {
+    width: '100%',
+    height: 52,                          // Figma: pill button height
+    backgroundColor: colors.buttonPrimary, // Figma: dark teal filled
+    borderRadius: 30,                    // Figma: full pill shape
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonPrimaryText: {
+    fontSize: fonts.md,
+    fontWeight: fonts.bold,
+    color: colors.buttonPrimaryText,    // White text on filled button
+    letterSpacing: 0.3,
+  },
+  buttonOutline: {
+    width: '100%',
+    height: 52,
+    backgroundColor: colors.white,
+    borderRadius: 30,                    // Figma: full pill shape
+    borderWidth: 1.5,
+    borderColor: colors.buttonOutlineBorder, // Figma: teal border
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonOutlineText: {
+    fontSize: fonts.md,
+    fontWeight: fonts.semibold,
+    color: colors.buttonOutlineText,    // Teal text on outline button
+    letterSpacing: 0.3,
+  },
 });
 
 export default LoginScreen;
