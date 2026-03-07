@@ -1,35 +1,30 @@
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator }
-  from "@react-navigation/native-stack";
-import SplashScreen from "../screens/SplashScreen";
-import LoginScreen from "../screens/auth/LoginScreen";
-import ForgotPasswordScreen from "../screens/auth/ForgotPasswordScreen";
-import RegisterScreen from "../screens/auth/RegisterScreen";
-import { ROUTES } from "../constants/routes";
- 
-const Stack = createNativeStackNavigator();
- 
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import AuthNavigator from './AuthNavigator';
+import AppNavigator from './AppNavigator';
+
+/**
+ * RootNavigator
+ *
+ * CURRENT STATE: Always renders AuthNavigator (no session check yet).
+ *
+ * BACKEND ENGINEER — To enable session-based routing:
+ *   1. Import AuthService from '../services/AuthService'
+ *   2. Replace: const isAuthenticated = false
+ *      With:    const isAuthenticated = AuthService.isAuthenticated()
+ *   3. Wrap with Clerk's useAuth() hook or a session context
+ *
+ * Stack structure:
+ *   AuthNavigator → SplashScreen, WelcomeScreen, ClerkAuthScreen
+ *   AppNavigator  → PersonalInfoScreen, TherapistPortalScreen, DashboardScreen
+ */
 export default function RootNavigator() {
+  // TODO (Backend Engineer): Replace false with AuthService.isAuthenticated()
+  const isAuthenticated = false;
+
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen
-          name={ROUTES.SPLASH}
-          component={SplashScreen}
-        />
-        <Stack.Screen
-          name={ROUTES.LOGIN}
-          component={LoginScreen}
-        />
-        <Stack.Screen
-          name="ForgotPassword"
-          component={ForgotPasswordScreen}
-        />
-        <Stack.Screen
-          name="Register"
-          component={RegisterScreen}
-        />
-      </Stack.Navigator>
+      {isAuthenticated ? <AppNavigator /> : <AuthNavigator />}
     </NavigationContainer>
   );
 }

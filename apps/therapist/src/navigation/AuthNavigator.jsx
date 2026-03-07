@@ -5,7 +5,7 @@ import LoginScreen from '../screens/auth/LoginScreen';
 import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
 import RegisterScreen from '../screens/auth/RegisterScreen';
 import TherapistPortalScreen from '../screens/auth/TherapistPortalScreen';
-import MobileVerificationScreen from '../screens/auth/MobileVerificationScreen';
+import ClerkAuthScreen from '../screens/auth/ClerkAuthScreen';
 import RegistrationNextStep from '../screens/auth/RegistrationNextStep';
 import PersonalInfoScreen from '../screens/auth/PersonalInfoScreen';
 import OnboardingNext from '../screens/auth/OnboardingNext';
@@ -20,7 +20,8 @@ const AuthNavigator = () => (
     <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
     <Stack.Screen name="Register" component={RegisterScreen} />
     <Stack.Screen name="TherapistPortal" component={TherapistPortalScreen} />
-    <Stack.Screen name="MobileVerification" component={MobileVerificationScreen} />
+    {/* BACKEND ENGINEER: Replace ClerkAuthScreen with Clerk OTP screen when ready */}
+    <Stack.Screen name="ClerkAuth" component={ClerkAuthScreen} />
     <Stack.Screen name="RegistrationNextStep" component={RegistrationNextStep} />
     <Stack.Screen name="PersonalInfo" component={PersonalInfoScreen} />
     <Stack.Screen name="OnboardingNext" component={OnboardingNext} />

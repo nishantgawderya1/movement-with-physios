@@ -92,7 +92,7 @@ const LoginScreen = ({ navigation }) => {
           <TouchableOpacity
             style={styles.buttonPrimary}
             activeOpacity={0.85}
-            onPress={() => navigation.navigate('MobileVerification')}
+            onPress={() => navigation.navigate('ClerkAuth')}
           >
             <Text style={styles.buttonPrimaryText}>Activate My Clinic</Text>
           </TouchableOpacity>
