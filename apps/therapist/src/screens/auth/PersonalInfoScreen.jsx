@@ -64,7 +64,7 @@ const PersonalInfoScreen = ({ navigation }) => {
     setErrorMessage('');
     console.log('[MOCK] Full name saved:', fullName.trim());
     // TODO: await TherapistService.savePersonalInfo({ fullName: fullName.trim() });
-    navigation.navigate('OnboardingNext'); // placeholder — update when next screen is ready
+    navigation.navigate('ProfessionalCredentials'); // placeholder — update when next screen is ready
   };
 
   return (

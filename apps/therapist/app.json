@@ -9,7 +9,10 @@
       "backgroundColor": "#1A6B55"
     },
     "ios": {
-      "bundleIdentifier": "com.mwp.therapist"
+      "bundleIdentifier": "com.mwp.therapist",
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "We need access to your photos to upload your government ID."
+      }
     },
     "android": {
       "package": "com.mwp.therapist",
@@ -18,7 +21,13 @@
       }
     },
     "plugins": [
-      "expo-font"
+      "expo-font",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "We need access to your photos to upload your government ID."
+        }
+      ]
     ]
   }
 }
