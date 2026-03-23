@@ -14,6 +14,8 @@ import GovernmentIDVerificationScreen from '../screens/auth/GovernmentIDVerifica
 import ProfilePhotoScreen from '../screens/auth/ProfilePhotoScreen';
 import ScheduleVerificationCallScreen from '../screens/auth/ScheduleVerificationCallScreen';
 import BookingConfirmedScreen from '../screens/auth/BookingConfirmedScreen';
+import PendingVerificationDashboard from '../screens/dashboard/PendingVerificationDashboard';
+import DashboardScreen from '../screens/dashboard/DashboardScreen';
 
 
 // Auth flow navigator — handles Login, ForgotPassword, Register screens
@@ -36,6 +38,8 @@ const AuthNavigator = () => (
     <Stack.Screen name="RegistrationNextStep" component={RegistrationNextStep} />
     <Stack.Screen name="PersonalInfo" component={PersonalInfoScreen} />
     <Stack.Screen name="OnboardingNext" component={OnboardingNext} />
+    <Stack.Screen name="PendingVerificationDashboard" component={PendingVerificationDashboard} />
+    <Stack.Screen name="Dashboard" component={DashboardScreen} />
   </Stack.Navigator>
 );
 

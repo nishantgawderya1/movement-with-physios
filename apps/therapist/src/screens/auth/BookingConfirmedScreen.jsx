@@ -19,7 +19,7 @@ import { colors } from '../../constants/colors';
 import { fonts, fontFamilies } from '../../constants/fonts';
 
 const DISPLAY_DURATION = 3000; // ms before auto-advance
-const NEXT_SCREEN      = 'OnboardingNext'; // ← update when next screen is ready
+const NEXT_SCREEN      = 'PendingVerificationDashboard';
 
 const BookingConfirmedScreen = ({ navigation, route }) => {
   const selectedDate = route?.params?.selectedDate ?? null;
