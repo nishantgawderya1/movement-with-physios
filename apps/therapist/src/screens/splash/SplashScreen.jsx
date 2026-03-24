@@ -21,6 +21,12 @@ import { fontFamilies } from '../../constants/fonts';
 
 const { width } = Dimensions.get('window');
 
+// ─── DEV BYPASS ──────────────────────────────────────────────────────────────
+// Set to true to skip auth and jump straight to Dashboard during development.
+// Set back to false before committing / demoing to stakeholders.
+const DEV_BYPASS = true;
+// ─────────────────────────────────────────────────────────────────────────────
+
 const SplashScreen = ({ navigation }) => {
   const logoOpacity    = useRef(new Animated.Value(0)).current;
   const logoScale      = useRef(new Animated.Value(0.92)).current;
@@ -28,6 +34,13 @@ const SplashScreen = ({ navigation }) => {
   const screenOpacity  = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
+    // ── DEV BYPASS — skip auth, go straight to Dashboard ─────────────────────
+    if (DEV_BYPASS) {
+      navigation.replace('Dashboard');
+      return;
+    }
+    // ─────────────────────────────────────────────────────────────────────────
+
     // Step 1: Logo fades in with gentle scale
     Animated.parallel([
       Animated.timing(logoOpacity, {

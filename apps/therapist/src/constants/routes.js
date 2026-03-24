@@ -5,4 +5,7 @@ export const ROUTES = {
   DASHBOARD: "Dashboard",
   SCHEDULE: "Schedule",
   PATIENT_LIST: "PatientList",
+  CLIENTS: "AllClients",
+  EXERCISES: "ExerciseLibrary",
+  MESSAGES: "Messages",
 };

@@ -16,11 +16,12 @@ import {
   TouchableOpacity,
   TextInput,
   Animated,
-  Platform,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../../constants/colors';
 import { fonts, fontFamilies } from '../../constants/fonts';
+import BottomTabBar from '../../components/BottomTabBar';
+import { ROUTES } from '../../constants/routes';
 
 // ── Mock data — replace with API calls ────────────────────────────────────────
 const THERAPIST_NAME = 'Dr. Ayush';
@@ -45,18 +46,20 @@ const MOCK_ACTIVITY = [
   { id: 4, name: 'Anjali Kumar', note: 'New message received',                time: '1 day ago',    icon: 'chatbubble-ellipses',iconColor: '#6366F1' },
 ];
 
-const TABS = [
-  { id: 'home',     icon: 'home',              label: 'Home'      },
-  { id: 'clients',  icon: 'people',            label: 'Clients'   },
-  { id: 'messages', icon: 'chatbubble',        label: 'Messages'  },
-  { id: 'calendar', icon: 'calendar',          label: 'Calendar'  },
-  { id: 'exercise', icon: 'barbell-outline',   label: 'Exercises' },
-];
 
 // ── Component ──────────────────────────────────────────────────────────────────
 const DashboardScreen = ({ navigation }) => {
-  const [activeTab,   setActiveTab]   = useState('home');
-  const [searchText,  setSearchText]  = useState('');
+  const [searchText, setSearchText] = useState('');
+
+  const handleTabPress = (tabId) => {
+    if (tabId === 'clients') {
+      navigation.navigate(ROUTES.CLIENTS);
+    } else if (tabId === 'exercise') {
+      navigation.navigate(ROUTES.EXERCISES);
+    } else if (tabId === 'messages') {
+      navigation.navigate(ROUTES.MESSAGES);
+    }
+  };
 
   const fadeAnim  = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(16)).current;
@@ -203,26 +206,7 @@ const DashboardScreen = ({ navigation }) => {
       </ScrollView>
 
       {/* ── Bottom Tab Bar ───────────────────────────────────────── */}
-      <View style={styles.tabBar}>
-        {TABS.map((tab) => {
-          const isActive = activeTab === tab.id;
-          return (
-            <TouchableOpacity
-              key={tab.id}
-              style={styles.tabItem}
-              onPress={() => setActiveTab(tab.id)}
-              activeOpacity={0.7}
-            >
-              <Ionicons
-                name={isActive ? tab.icon : (tab.icon.endsWith('-outline') ? tab.icon : tab.icon + '-outline')}
-                size={22}
-                color={isActive ? colors.primary : colors.textLight}
-              />
-              {isActive && <View style={styles.tabActiveDot} />}
-            </TouchableOpacity>
-          );
-        })}
-      </View>
+      <BottomTabBar activeTab="home" onTabPress={handleTabPress} />
     </SafeAreaView>
   );
 };
@@ -410,30 +394,6 @@ const styles = StyleSheet.create({
   activityTime:   { fontSize: fonts.xs, color: colors.textLight },
   activityNote:   { fontSize: fonts.xs, color: colors.textMedium, lineHeight: 17 },
 
-  // Bottom tab bar
-  tabBar: {
-    flexDirection: 'row',
-    backgroundColor: colors.white,
-    borderTopWidth: 1,
-    borderTopColor: colors.cardBorder,
-    paddingBottom: Platform.OS === 'ios' ? 20 : 8,
-    paddingTop: 8,
-    paddingHorizontal: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.06,
-    shadowRadius: 8,
-    elevation: 10,
-  },
-  tabItem: {
-    flex: 1, alignItems: 'center', justifyContent: 'center',
-    paddingVertical: 4, gap: 4,
-  },
-  tabActiveDot: {
-    width: 4, height: 4, borderRadius: 2,
-    backgroundColor: colors.primary,
-    marginTop: 2,
-  },
 });
 
 export default DashboardScreen;

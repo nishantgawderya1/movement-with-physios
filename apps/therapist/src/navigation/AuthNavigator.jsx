@@ -16,7 +16,20 @@ import ScheduleVerificationCallScreen from '../screens/auth/ScheduleVerification
 import BookingConfirmedScreen from '../screens/auth/BookingConfirmedScreen';
 import PendingVerificationDashboard from '../screens/dashboard/PendingVerificationDashboard';
 import DashboardScreen from '../screens/dashboard/DashboardScreen';
+import AllClientsScreen from '../screens/dashboard/AllClientsScreen';
+import ExerciseLibraryScreen from '../screens/exercises/ExerciseLibraryScreen';
+import MessagesScreen from '../screens/messages/MessagesScreen';
 
+// Smooth fade transition for navigating between dashboard-level screens
+const fadeTransition = {
+  cardStyleInterpolator: ({ current }) => ({
+    cardStyle: { opacity: current.progress },
+  }),
+  transitionSpec: {
+    open:  { animation: 'timing', config: { duration: 220 } },
+    close: { animation: 'timing', config: { duration: 180 } },
+  },
+};
 
 // Auth flow navigator — handles Login, ForgotPassword, Register screens
 const Stack = createStackNavigator();
@@ -40,6 +53,9 @@ const AuthNavigator = () => (
     <Stack.Screen name="OnboardingNext" component={OnboardingNext} />
     <Stack.Screen name="PendingVerificationDashboard" component={PendingVerificationDashboard} />
     <Stack.Screen name="Dashboard" component={DashboardScreen} />
+    <Stack.Screen name="AllClients" component={AllClientsScreen} options={fadeTransition} />
+    <Stack.Screen name="ExerciseLibrary" component={ExerciseLibraryScreen} options={fadeTransition} />
+    <Stack.Screen name="Messages" component={MessagesScreen} options={fadeTransition} />
   </Stack.Navigator>
 );
 
