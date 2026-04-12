@@ -122,7 +122,9 @@ const MessagesScreen = ({ navigation }) => {
         contentContainerStyle={styles.listContent}
       >
         {filteredConversations.map((conv) => (
-          <TouchableOpacity key={conv.id} style={styles.row} activeOpacity={0.8}>
+          <TouchableOpacity key={conv.id} style={styles.row} activeOpacity={0.8}
+            onPress={() => navigation.navigate(ROUTES.CHAT, { conv })}
+          >
 
             {/* Avatar with online dot */}
             <View style={styles.avatarWrap}>

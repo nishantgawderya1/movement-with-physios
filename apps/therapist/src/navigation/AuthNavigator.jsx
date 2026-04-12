@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SplashScreen from '../screens/splash/SplashScreen';
 import LoginScreen from '../screens/auth/LoginScreen';
 import ForgotPasswordScreen from '../screens/auth/ForgotPasswordScreen';
@@ -19,23 +19,24 @@ import DashboardScreen from '../screens/dashboard/DashboardScreen';
 import AllClientsScreen from '../screens/dashboard/AllClientsScreen';
 import ExerciseLibraryScreen from '../screens/exercises/ExerciseLibraryScreen';
 import MessagesScreen from '../screens/messages/MessagesScreen';
+import ChatScreen from '../screens/messages/ChatScreen';
+import ExerciseDetailScreen from '../screens/exercises/ExerciseDetailScreen';
+import AssignFlowNavigator from './AssignFlowNavigator';
+import { ROUTES } from '../constants/routes';
 
-// Smooth fade transition for navigating between dashboard-level screens
-const fadeTransition = {
-  cardStyleInterpolator: ({ current }) => ({
-    cardStyle: { opacity: current.progress },
-  }),
-  transitionSpec: {
-    open:  { animation: 'timing', config: { duration: 220 } },
-    close: { animation: 'timing', config: { duration: 180 } },
-  },
+// Native slide-from-right — GPU-driven, no JS thread involvement
+const SCREEN_OPTIONS = {
+  headerShown: false,
+  animation: 'slide_from_right',
+  animationDuration: 280,
+  freezeOnBlur: true,
 };
 
-// Auth flow navigator — handles Login, ForgotPassword, Register screens
-const Stack = createStackNavigator();
+// Auth flow navigator
+const Stack = createNativeStackNavigator();
 
 const AuthNavigator = () => (
-  <Stack.Navigator screenOptions={{ headerShown: false }}>
+  <Stack.Navigator screenOptions={SCREEN_OPTIONS}>
     <Stack.Screen name="Splash" component={SplashScreen} />
     <Stack.Screen name="BookingConfirmed" component={BookingConfirmedScreen} />
     <Stack.Screen name="ScheduleVerificationCall" component={ScheduleVerificationCallScreen} />
@@ -53,9 +54,12 @@ const AuthNavigator = () => (
     <Stack.Screen name="OnboardingNext" component={OnboardingNext} />
     <Stack.Screen name="PendingVerificationDashboard" component={PendingVerificationDashboard} />
     <Stack.Screen name="Dashboard" component={DashboardScreen} />
-    <Stack.Screen name="AllClients" component={AllClientsScreen} options={fadeTransition} />
-    <Stack.Screen name="ExerciseLibrary" component={ExerciseLibraryScreen} options={fadeTransition} />
-    <Stack.Screen name="Messages" component={MessagesScreen} options={fadeTransition} />
+    <Stack.Screen name="AllClients" component={AllClientsScreen} />
+    <Stack.Screen name="ExerciseLibrary" component={ExerciseLibraryScreen} />
+    <Stack.Screen name="Messages" component={MessagesScreen} />
+    <Stack.Screen name="Chat" component={ChatScreen} />
+    <Stack.Screen name="ExerciseDetail" component={ExerciseDetailScreen} />
+    <Stack.Screen name={ROUTES.ASSIGN_FLOW} component={AssignFlowNavigator} />
   </Stack.Navigator>
 );
 

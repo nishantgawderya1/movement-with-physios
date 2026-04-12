@@ -4,7 +4,7 @@
 // Backend dev: replace MOCK_EXERCISES with real API call.
 // ─────────────────────────────────────────────────────────────────────────────
 
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
@@ -16,6 +16,7 @@ import {
   Animated,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
 import { colors } from '../../constants/colors';
 import { fonts, fontFamilies } from '../../constants/fonts';
 import BottomTabBar from '../../components/BottomTabBar';
@@ -104,9 +105,10 @@ const DIFFICULTY_CONFIG = {
 };
 
 // ── Component ─────────────────────────────────────────────────────────────────
-const ExerciseLibraryScreen = ({ navigation }) => {
-  const [searchText,   setSearchText]   = useState('');
-  const [activeFilter, setActiveFilter] = useState('All Exercises');
+const ExerciseLibraryScreen = ({ navigation, route }) => {
+  const [searchText,        setSearchText]        = useState('');
+  const [activeFilter,      setActiveFilter]      = useState('All Exercises');
+  const [selectedExercises, setSelectedExercises] = useState([]);
 
   const fadeAnim  = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(12)).current;
@@ -117,6 +119,34 @@ const ExerciseLibraryScreen = ({ navigation }) => {
       Animated.timing(slideAnim, { toValue: 0, duration: 300, useNativeDriver: true }),
     ]).start();
   }, []);
+
+  // Clear selection when returning from the assign flow with clearSelection param
+  useFocusEffect(
+    useCallback(() => {
+      if (route.params?.clearSelection) {
+        setSelectedExercises([]);
+        // Reset the param so it doesn't re-fire on future focus events
+        navigation.setParams({ clearSelection: false });
+      }
+    }, [route.params?.clearSelection]),
+  );
+
+  const toggleExercise = (exerciseId) => {
+    setSelectedExercises((prev) =>
+      prev.includes(exerciseId)
+        ? prev.filter((id) => id !== exerciseId)
+        : [...prev, exerciseId],
+    );
+  };
+
+  const handleAssignPress = () => {
+    if (selectedExercises.length === 0) return;
+    const exercisesToAssign = MOCK_EXERCISES.filter((e) => selectedExercises.includes(e.id));
+    navigation.navigate(ROUTES.ASSIGN_FLOW, {
+      screen: ROUTES.SELECT_CLIENT,
+      params: { selectedExercises: exercisesToAssign },
+    });
+  };
 
   // Unique categories from mock data
   const categories = ['All Exercises', ...Array.from(new Set(MOCK_EXERCISES.map((e) => e.category)))];
@@ -155,8 +185,19 @@ const ExerciseLibraryScreen = ({ navigation }) => {
           <Text style={styles.title}>Exercise Library</Text>
           <Text style={styles.subtitle}>{MOCK_EXERCISES.length} Exercises Available</Text>
         </View>
-        <TouchableOpacity style={styles.assignBtn} activeOpacity={0.85}>
-          <Text style={styles.assignBtnText}>Assign</Text>
+        <TouchableOpacity
+          style={[styles.assignBtn, selectedExercises.length === 0 && styles.assignBtnInactive]}
+          onPress={handleAssignPress}
+          activeOpacity={selectedExercises.length > 0 ? 0.85 : 1}
+        >
+          {selectedExercises.length > 0 && (
+            <View style={styles.assignCountBadge}>
+              <Text style={styles.assignCountText}>{selectedExercises.length}</Text>
+            </View>
+          )}
+          <Text style={styles.assignBtnText}>
+            {selectedExercises.length > 0 ? 'Assign' : 'Select'}
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -210,16 +251,27 @@ const ExerciseLibraryScreen = ({ navigation }) => {
       >
         {filteredExercises.map((exercise) => {
           const diffCfg = DIFFICULTY_CONFIG[exercise.difficulty] ?? { bg: '#F3F4F6', text: '#6B7280' };
+          const isSelected = selectedExercises.includes(exercise.id);
           return (
-            <TouchableOpacity key={exercise.id} style={styles.exerciseCard} activeOpacity={0.85}>
+            <TouchableOpacity
+              key={exercise.id}
+              style={[styles.exerciseCard, isSelected && styles.exerciseCardSelected]}
+              onPress={() => toggleExercise(exercise.id)}
+              activeOpacity={0.85}
+            >
 
-              {/* Top row: emoji icon + difficulty badge */}
+              {/* Top row: emoji icon + difficulty badge + selection check */}
               <View style={styles.cardTopRow}>
                 <View style={[styles.emojiWrap, { backgroundColor: exercise.emojiBg }]}>
                   <Text style={styles.emojiText}>{exercise.emoji}</Text>
                 </View>
-                <View style={[styles.difficultyBadge, { backgroundColor: diffCfg.bg }]}>
-                  <Text style={[styles.difficultyText, { color: diffCfg.text }]}>{exercise.difficulty}</Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+                  <View style={[styles.difficultyBadge, { backgroundColor: diffCfg.bg }]}>
+                    <Text style={[styles.difficultyText, { color: diffCfg.text }]}>{exercise.difficulty}</Text>
+                  </View>
+                  {isSelected && (
+                    <Ionicons name="checkmark-circle" size={22} color={colors.primary} />
+                  )}
                 </View>
               </View>
 
@@ -283,13 +335,27 @@ const styles = StyleSheet.create({
   },
   subtitle: { fontSize: fonts.xs, color: colors.textMedium, marginTop: 1 },
   assignBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: colors.primary,
     borderRadius: 20,
-    paddingHorizontal: 18,
+    paddingHorizontal: 16,
     paddingVertical: 8,
+    gap: 6,
+  },
+  assignBtnInactive: {
+    backgroundColor: '#94A3B8',
   },
   assignBtnText: {
     fontSize: fonts.sm, fontWeight: fonts.semibold, color: colors.white,
+  },
+  assignCountBadge: {
+    width: 18, height: 18, borderRadius: 9,
+    backgroundColor: colors.white,
+    justifyContent: 'center', alignItems: 'center',
+  },
+  assignCountText: {
+    fontSize: 10, fontWeight: fonts.bold, color: colors.primary,
   },
 
   // Search + Filter row
@@ -361,13 +427,17 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: colors.cardBorder,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 8,
     elevation: 2,
+  },
+  exerciseCardSelected: {
+    borderColor: colors.primary,
+    backgroundColor: colors.primaryLight,
   },
 
   cardTopRow: {

@@ -8,4 +8,11 @@ export const ROUTES = {
   CLIENTS: "AllClients",
   EXERCISES: "ExerciseLibrary",
   MESSAGES: "Messages",
+  CHAT: "Chat",
+  EXERCISE_DETAIL: "ExerciseDetail",
+  // Assign exercises flow
+  ASSIGN_FLOW: "AssignFlow",
+  SELECT_CLIENT: "SelectClient",
+  SET_SCHEDULE: "SetSchedule",
+  REVIEW_ASSIGNMENT: "ReviewAssignment",
 };
