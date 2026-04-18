@@ -109,6 +109,23 @@ ForgotPassword / Register (stubs)
 
 `RootNavigator.jsx` exists but is **not used** — reserved for when real auth state is added.
 
+## graphify — File Discovery
+
+A knowledge graph of this codebase lives in `graphify-out/graph.json` and is rebuilt automatically after every `git commit` via a post-commit hook.
+
+**Rule: Before using Glob, Grep, or any file search tool, query the graph first.**
+
+```bash
+/graphify query "<what you are looking for>"
+```
+
+Examples:
+- Looking for where OTP is handled → `/graphify query "OTP send verify"`
+- Looking for navigation setup → `/graphify query "navigator stack screens"`
+- Looking for color/theme constants → `/graphify query "colors theme palette"`
+
+Only fall back to Glob/Grep if the graph returns no useful matches or `graphify-out/graph.json` does not exist. If the graph is stale (files changed since last commit), run `/graphify apps/therapist/src apps/therapist/backend --update` to refresh it.
+
 ### Rules
 
 1. Always use the existing constants from `src/constants/` (colors, fonts, routes, strings).
